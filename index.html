@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atharva Sawantdesai | Full Stack & Embedded Portfolio</title>
+    <!-- Load Tailwind CSS for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons -->
+    <script type="module">
+        import { createIcons, icons } from 'https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.esm.js';
+        createIcons({ icons });
+    </script>
+    <!-- Load Tone.js for background music -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <!-- Use Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Global & Custom Scrollbar */
+        body::-webkit-scrollbar { width: 8px; }
+        body::-webkit-scrollbar-track { background: #0F172A; /* Slate-900 */ }
+        body::-webkit-scrollbar-thumb { background-color: #EC4899; /* Fuchsia-500 */ border-radius: 20px; border: 1px solid #0F172A; }
+        html { scroll-behavior: smooth; }
+        
+        /* --- General Animations & Transitions --- */
+        
+        .transition-transform-shadow {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* --- Neon & Glow Effects --- */
+        .neon-text-header {
+            text-shadow: 0 0 8px #06b6d4, 0 0 20px #06b6d4, 0 0 40px #06b6d4; /* Sharper, brighter cyan glow */
+        }
+        .neon-text-main {
+            text-shadow: 0 0 5px #F472B6, 0 0 15px #F472B6; /* Sharper, brighter fuchsia glow */
+        }
+        .glow-cyan { text-shadow: 0 0 3px #06b6d4; }
+        .glow-fuchsia { text-shadow: 0 0 3px #d946ef; }
+        .glow-emerald { text-shadow: 0 0 3px #10b981; }
+
+        /* Keyframe: Subtle Continuous Pulse Glow for Logo/Social Icons */
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 4px #06b6d4; }
+            50% { text-shadow: 0 0 10px #06b6d4, 0 0 15px #06b6d4; } /* Increased intensity */
+            100% { text-shadow: 0 0 4px #06b6d4; }
+        }
+        .logo-pulse {
+            animation: pulseGlow 3s infinite alternate; /* Faster pulse */
+        }
+
+        /* Keyframe: Aggressive Button Shake */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) scale(1.05); }
+            20%, 60% { transform: translateX(-3px) scale(1.05); }
+            40%, 80% { transform: translateX(3px) scale(1.05); }
+        }
+
+        /* Neon Button Styling */
+        .neon-button {
+            box-shadow: 0 0 5px #06b6d4, 0 0 15px #06b6d4;
+            transition: all 0.3s ease;
+        }
+        .neon-button:hover {
+            box-shadow: 0 0 10px #06b6d4, 0 0 30px #06b6d4;
+            transform: scale(1.05);
+            animation: shake 0.5s infinite alternate; /* Aggressive Shake */
+        }
+        .neon-button-secondary {
+            box-shadow: 0 0 5px #d946ef, 0 0 15px #d946ef;
+            border: 1px solid #d946ef;
+            transition: all 0.3s ease;
+        }
+        .neon-button-secondary:hover {
+            box-shadow: 0 0 10px #d946ef, 0 0 30px #d946ef;
+            transform: scale(1.05);
+             animation: shake 0.5s infinite alternate; /* Aggressive Shake */
+        }
+        
+        /* Glassmorphism base styles */
+        .glass-card {
+            background-color: rgba(30, 41, 59, 0.5); /* slate-800/50 */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle white border for sharpness */
+        }
+
+        /* --- BACKGROUND CANVAS STYLES --- */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1; /* Ensure it is behind all content */
+            pointer-events: none; /* Allows clicks to pass through to the main body */
+        }
+
+        /* The dots-bg wrapper now just provides the dark body background */
+        .dots-bg {
+            position: relative;
+        }
+
+        /* --- Project Card Animations (Hover) --- */
+        .project-card:hover {
+            border-color: #06b6d4; /* Change border on hover */
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.5); /* Increased outer glow on hover */
+        }
+
+        /* --- Filter Button Active State --- */
+        .filter-button.active {
+            box-shadow: 0 0 10px #f43f5e;
+            border-color: #f43f5e;
+            background-color: #f43f5e;
+            color: #fff;
+        }
+        .filter-button {
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        /* --- Component Entrance Animations (Drastic) --- */
+        
+        /* Vertical Fade In (Used on Home Section and Project Cards) */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(40px); /* Increased distance */
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Horizontal Slide In (Used for Skills/Education/Contact Cards) */
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-100px); /* Increased distance for aggressive slide */
+            animation: slideInLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+    </style>
+</head>
+<body class="bg-slate-950 min-h-screen text-gray-100 relative">
+
+    <div class="dots-bg">
+        <!-- ---------------------------------------------------- -->
+        <!-- NEW: Live Wallpaper Canvas for Particle System -->
+        <!-- ---------------------------------------------------- -->
+        <canvas id="particle-canvas"></canvas>
+
+        <!-- Header (Fixed Navigation) -->
+        <header id="header" class="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-md shadow-2xl border-b border-fuchsia-900/50 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+                <!-- Applied logo-pulse for continuous subtle animation -->
+                <h1 class="text-xl font-extrabold tracking-widest text-white neon-cyan transition-colors duration-300 logo-pulse">A. SAWANTDESAI</h1>
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-4" id="desktop-nav">
+                    <!-- Links will be populated by JS -->
+                </nav>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="p-2 rounded-md text-gray-400 hover:text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-colors">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <!-- Mobile Menu Container -->
+                    <div id="mobile-menu" class="hidden absolute top-16 right-0 w-48 py-2 bg-slate-800 rounded-lg shadow-xl border border-fuchsia-900/50 transition-all duration-300">
+                        <!-- Links will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="pt-16">
+            <!-- 1. Home Section -->
+            <section id="home" class="pt-24 pb-20 md:pt-32 min-h-screen flex items-center justify-center relative overflow-hidden"></section>
+
+            <!-- 2. Projects Section -->
+            <section id="projects" class="py-20 bg-slate-900 relative">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div id="projects-content"></div>
+                </div>
+            </section>
+
+            <!-- 3. Skills Section -->
+            <section id="skills" class="py-20 bg-slate-950 relative">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div id="skills-content"></div>
+                </div>
+            </section>
+
+            <!-- 4. Education Section -->
+            <section id="education" class="py-20 bg-slate-900 relative">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div id="education-content"></div>
+                </div>
+            </section>
+
+            <!-- 5. Contact Section -->
+            <section id="contact" class="py-20 bg-slate-950 relative">
+                <div class="max-w-xl mx-auto text-center px-4">
+                    <div id="contact-content"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-slate-950 py-6 border-t border-cyan-900/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 text-sm">
+                <p>&copy; <span id="current-year"></span> Atharva Sawantdesai | Digital Portfolio</p>
+                <p class="mt-1">Built with HTML/CSS/JS. Deployed on Vercel. Aesthetic: Cyberpunk Matrix.</p>
+            </div>
+        </footer>
+
+        <!-- Audio Player Button (Fixed) -->
+        <button id="audio-player-button" class="fixed bottom-4 right-4 z-[100] p-3 rounded-full shadow-2xl transition-all duration-300 bg-slate-700 hover:bg-slate-600 border border-fuchsia-500/50" aria-label="Play Background Music" title="Play Background Music">
+             <i data-lucide="volume-x" class="w-5 h-5 text-fuchsia-400"></i>
+        </button>
+        
+    </div>
+
+    <script>
+        // --- State Simulation ---
+        let activeSection = 'home';
+        let isPlaying = false;
+        let playerRef = null;
+        
+        // --- Data Definitions ---
+
+        const navigation = [
+            { name: 'Home', icon: 'home', section: 'home' },
+            { name: 'Projects', icon: 'briefcase', section: 'projects' },
+            { name: 'Skills', icon: 'zap', section: 'skills' },
+            { name: 'Education', icon: 'book-open', section: 'education' },
+            { name: 'Contact', icon: 'mail', section: 'contact' },
+        ];
+
+        const skills = [
+            { category: 'Web Development (MERN)', items: ['React.js (Frontend)', 'MongoDB (NoSQL/Backend)', 'REST APIs', 'Node.js (Familiarity)', 'JavaScript (ES6+)', 'HTML', 'CSS'] },
+            { category: 'Embedded Systems & IoT', items: ['ESP32', 'Arduino', 'NodeMCU', 'Embedded C', 'Timer IC 555', 'Sensor Integration (MQ Series, IR/Ultrasonic)'] },
+            { category: 'Specialized & Core', items: ['Digital Signal Processing (DSP)', 'Voice Biometrics (MFCC)', 'C/C++', 'Python'] },
+            { category: 'Tools & Platforms', items: ['VS Code', 'Google Colab', 'ThingSpeak', 'Google Sheets API', 'GitHub', 'Vercel (Cloud Deployment)'] },
+        ];
+
+        const projects = [
+            {
+                title: "B.Tech Lab Inventory Tracker",
+                description: "A robust, responsive web application for real-time inventory tracking and stock management, demonstrating full MERN stack proficiency. (FA-II Cloud Target)",
+                technologies: "MERN Stack (React, MongoDB, Node.js), REST APIs, CRUD Operations",
+                category: "Full Stack Web",
+                icon: 'bar-chart-2',
+                link: "https://mdm-mini-project.vercel.app/index.html",
+            },
+            {
+                title: "Tic Tac Toe Game (vs CPU) & Stopwatch",
+                description: "A set of mini-projects focused on developing engaging user interfaces (UI) and implementing core JavaScript logic for user-friendly web applications.",
+                technologies: "HTML, CSS, Vanilla JavaScript, Responsive Design",
+                category: "Frontend/UI",
+                icon: 'code',
+                link: "https://tictac-ht5v7qjot-atharvasupremes-projects.vercel.app/",
+                link2: "https://mywebpage-gamma.vercel.app/",
+            },
+            {
+                title: "Voice Biometric Authentication System",
+                description: "Designed and simulated a speaker verification system using advanced Digital Signal Processing (DSP) techniques for accurate voice pattern matching.",
+                technologies: "MATLAB/Python, Digital Signal Processing (DSP), MFCC, Pattern Matching",
+                category: "Specialized DSP",
+                icon: 'trending-up',
+            },
+            {
+                title: "Autonomous Vacuum Cleaner",
+                description: "Built a smart indoor robot capable of autonomous path planning and comprehensive obstacle avoidance using real-time sensor data.",
+                technologies: "Arduino, Embedded C++, IR/Ultrasonic Sensors",
+                category: "Embedded/IoT",
+                icon: 'cpu',
+            },
+            {
+                title: "Gas Leakage Detector",
+                description: "A safety-critical alert system using the MQ-6 gas sensor and the Timer IC 555 in monostable mode, activating an immediate audible alarm.",
+                technologies: "MQ-6 Sensor, Timer IC 555, Relay, Buzzer, Circuit Design",
+                category: "Circuit Design",
+                icon: 'zap',
+            },
+        ];
+        
+        // --- Core Utilities ---
+        
+        /**
+         * Renders a Section Title.
+         */
+        function renderSectionTitle(title, iconName) {
+            return `
+                <h2 class="text-4xl font-extrabold text-white mb-10 flex flex-col items-center gap-3 text-center">
+                    <i data-lucide="${iconName}" class="w-8 h-8 text-cyan-400 glow-cyan"></i>
+                    <span class="neon-text-main pb-1 border-b-2 border-fuchsia-500/50">${title}</span>
+                </h2>
+            `;
+        }
+
+        /**
+         * Updates the active state of navigation links and re-renders icons.
+         */
+        function updateActiveSection(sectionId) {
+            activeSection = sectionId;
+
+            const links = document.querySelectorAll('#desktop-nav a, #mobile-menu a');
+            links.forEach(link => {
+                const linkSection = link.getAttribute('href').substring(1);
+                const isActive = linkSection === sectionId;
+                
+                link.classList.remove('bg-fuchsia-700', 'text-white', 'shadow-lg', 'neon-fuchsia', 'text-gray-300', 'hover:text-cyan-400', 'hover:bg-slate-800');
+                
+                if (isActive) {
+                    link.classList.add('bg-fuchsia-700', 'text-white', 'shadow-lg', 'neon-fuchsia');
+                } else {
+                    link.classList.add('text-gray-300', 'hover:text-cyan-400', 'hover:bg-slate-800');
+                }
+            });
+
+            // Recreate icons after class changes
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        }
+
+        // --- Audio Player Logic ---
+
+        function initializeAudio() {
+            if (typeof Tone !== 'undefined' && !playerRef) {
+                try {
+                    // Create a subtle, ambient synth loop
+                    const synth = new Tone.PolySynth(Tone.Synth, {
+                        oscillator: { type: 'sine' },
+                        envelope: { attack: 0.2, decay: 0.3, sustain: 0.6, release: 0.8 },
+                        volume: -18, // Very quiet background volume
+                    }).toDestination();
+
+                    const notes = ["C4", "Eb4", "G4", "Bb4"];
+                    let index = 0;
+
+                    const loop = new Tone.Loop((time) => {
+                        synth.triggerAttackRelease(notes[index % notes.length], "4n", time);
+                        index++;
+                    }, "1m").start(0); // Loop runs every measure
+
+                    Tone.Transport.bpm.value = 60; // Slow ambient tempo
+                    Tone.Transport.loop = true;
+                    Tone.Transport.loopEnd = '4m'; // Ensures a longer loop phrase
+
+                    playerRef = { synth, loop };
+
+                } catch (e) {
+                    console.error("Tone.js initialization failed:", e);
+                }
+            }
+        }
+
+        function togglePlayback() {
+            const button = document.getElementById('audio-player-button');
+            const iconElement = button.querySelector('i');
+
+            if (typeof Tone === 'undefined' || !playerRef) {
+                console.warn("Audio not yet initialized.");
+                return;
+            }
+
+            // Must be called on user interaction for Web Audio API to work
+            Tone.start().then(() => { 
+                if (isPlaying) {
+                    Tone.Transport.stop();
+                    isPlaying = false;
+                    button.classList.remove('bg-fuchsia-600', 'hover:bg-fuchsia-500');
+                    button.classList.add('bg-slate-700', 'hover:bg-slate-600');
+                    iconElement.setAttribute('data-lucide', 'volume-x');
+                    iconElement.classList.remove('text-white');
+                    iconElement.classList.add('text-fuchsia-400');
+                } else {
+                    Tone.Transport.start();
+                    isPlaying = true;
+                    button.classList.add('bg-fuchsia-600', 'hover:bg-fuchsia-500');
+                    button.classList.remove('bg-slate-700', 'hover:bg-slate-600');
+                    iconElement.setAttribute('data-lucide', 'volume-2');
+                    iconElement.classList.remove('text-fuchsia-400');
+                    iconElement.classList.add('text-white');
+                }
+                if (window.lucide) { window.lucide.createIcons(); }
+            });
+        }
+
+        // --- DOM Rendering Functions ---
+
+        function renderNavigation() {
+            const navHtml = navigation.map(item => `
+                <a href="#${item.section}" 
+                   class="nav-link flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 transform hover:scale-105" 
+                   data-section="${item.section}">
+                    <i data-lucide="${item.icon}" class="w-4 h-4"></i>
+                    ${item.name}
+                </a>
+            `).join('');
+
+            document.getElementById('desktop-nav').innerHTML = navHtml;
+            document.getElementById('mobile-menu').innerHTML = navHtml;
+            if (window.lucide) { window.lucide.createIcons(); }
+        }
+
+        function renderHome() {
+            document.getElementById('home').innerHTML = `
+                <div class="max-w-4xl mx-auto text-center px-4 relative z-10 fade-in-up" style="animation-delay: 0s;">
+                    <p class="text-xl text-fuchsia-400 font-semibold mb-4 tracking-widest uppercase">
+                        Electronics and Full Stack Engineering
+                    </p>
+                    <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter text-white mb-6 leading-none neon-text-header" style="animation-delay: 0.2s;">
+                        ATHARVA SAWANTDESAI
+                    </h1>
+                    <h2 class="text-3xl md:text-4xl text-cyan-400 font-light mb-10" style="animation-delay: 0.4s;">
+                        Bridging Hardware, Embedded Systems, and MERN Cloud Solutions
+                    </h2>
+                    <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-12 leading-relaxed glass-card p-6 rounded-2xl border border-fuchsia-500/30 shadow-2xl fade-in-up" style="animation-delay: 0.6s;">
+                        Possessing a diverse skill set that includes circuit design, embedded systems (C/C++), and real-time data processing, with recent specialization in <b>Full Stack Web Development (MERN Stack)</b>. Experienced in end-to-end development, from hardware interfacing to <b>cloud integration and responsive application deployment</b>.
+                    </p>
+
+                    <div class="flex justify-center gap-5 fade-in-up" style="animation-delay: 0.8s;">
+                        <a href="https://github.com/Atharvasupreme" target="_blank" rel="noopener noreferrer">
+                            <button class="neon-button bg-cyan-600 hover:bg-cyan-700 text-slate-900 font-bold py-3 px-6 rounded-full shadow-lg transition-transform-shadow flex items-center gap-2">
+                                <i data-lucide="code" class="w-5 h-5"></i>
+                                View Codebase
+                            </button>
+                        </a>
+                        <a href="https://linkedin.com/in/atharvasawantdesai" target="_blank" rel="noopener noreferrer">
+                            <button class="neon-button-secondary bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-transform-shadow flex items-center gap-2">
+                                <i data-lucide="link" class="w-5 h-5"></i>
+                                Connect on LinkedIn
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            `;
+            // Manually apply fade-in-up class to children for staggered animation
+            const homeContent = document.getElementById('home').children[0];
+            Array.from(homeContent.children).forEach((child, index) => {
+                child.style.animationDelay = `${index * 0.2}s`;
+                child.classList.add('fade-in-up');
+            });
+
+            if (window.lucide) { window.lucide.createIcons(); }
+        }
+
+        // --- New Feature: Dynamic Project Filtering ---
+        function filterProjects(filter) {
+            const projectCards = document.querySelectorAll('.project-card');
+            const buttons = document.querySelectorAll('.filter-button');
+            
+            // Update button active state
+            buttons.forEach(btn => btn.classList.remove('active'));
+            if (filter !== 'All') {
+                document.querySelector(`.filter-button[data-filter="${filter}"]`).classList.add('active');
+            } else {
+                 document.querySelector(`.filter-button[data-filter="All"]`).classList.add('active');
+            }
+
+            // Filter cards
+            projectCards.forEach(card => {
+                const category = card.getAttribute('data-category');
+                // Use a simple transition property to fade in/out
+                if (filter === 'All' || category.includes(filter)) {
+                    card.classList.remove('hidden-by-filter');
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                } else {
+                    card.classList.add('hidden-by-filter');
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                }
+            });
+        }
+
+        function renderProjects() {
+            let projectsHtml = renderSectionTitle("Key Projects & Expertise", "briefcase");
+
+            // Filter Buttons UI
+            projectsHtml += `
+                <div class="flex flex-wrap justify-center gap-4 mb-12 fade-in-up" style="animation-delay: 0.1s;">
+                    <button onclick="filterProjects('All')" data-filter="All" class="filter-button bg-fuchsia-600/30 text-white font-semibold py-2 px-4 rounded-full transition-all hover:bg-fuchsia-600/50 active">
+                        All Projects
+                    </button>
+                    <button onclick="filterProjects('Web')" data-filter="Web" class="filter-button bg-cyan-600/30 text-white font-semibold py-2 px-4 rounded-full transition-all hover:bg-cyan-600/50">
+                        Web/Full Stack
+                    </button>
+                    <button onclick="filterProjects('Embedded')" data-filter="Embedded" class="filter-button bg-rose-600/30 text-white font-semibold py-2 px-4 rounded-full transition-all hover:bg-rose-600/50">
+                        Embedded/IoT
+                    </button>
+                    <button onclick="filterProjects('DSP')" data-filter="DSP" class="filter-button bg-emerald-600/30 text-white font-semibold py-2 px-4 rounded-full transition-all hover:bg-emerald-600/50">
+                        DSP/Core
+                    </button>
+                </div>
+            `;
+            
+            const cardsHtml = projects.map((project, index) => {
+                const isWeb = project.category.includes('Web');
+                const isEmbedded = project.category.includes('Embedded');
+                let filterCategory = project.category.includes('Web') || project.category.includes('Frontend') ? 'Web' :
+                                     project.category.includes('Embedded') || project.category.includes('Circuit') ? 'Embedded' : 'DSP';
+
+                const categoryClass = isWeb ? 'bg-emerald-800/50 text-emerald-300 border border-emerald-500/50' :
+                                      isEmbedded ? 'bg-rose-800/50 text-rose-300 border border-rose-500/50' :
+                                      'bg-cyan-800/50 text-cyan-300 border border-cyan-500/50';
+                
+                let linksHtml = '';
+
+                if (project.link) {
+                    const linkText = project.title.includes('Tracker') ? 'Live App (FA-II Target)' : project.title.includes('Tic Tac Toe') ? 'Live Tic Tac Toe' : 'Live Preview';
+                    linksHtml += `
+                        <a href="${project.link}" target="_blank" rel="noopener noreferrer" class="shadow-lg neon-cyan-hover flex items-center gap-2 text-sm bg-cyan-600/30 text-cyan-300 py-1.5 px-3 rounded-lg hover:bg-cyan-600/50 font-semibold transition-all">
+                            <i data-lucide="link" class="w-3.5 h-3.5"></i>
+                            ${linkText}
+                        </a>
+                    `;
+                }
+                if (project.link2) {
+                    linksHtml += `
+                        <a href="${project.link2}" target="_blank" rel="noopener noreferrer" class="shadow-lg neon-fuchsia-hover flex items-center gap-2 text-sm bg-fuchsia-600/30 text-fuchsia-300 py-1.5 px-3 rounded-lg hover:bg-fuchsia-600/50 font-semibold transition-all">
+                            <i data-lucide="link" class="w-3.5 h-3.5"></i>
+                            Live Stopwatch
+                        </a>
+                    `;
+                }
+                if (!project.link && !project.link2) {
+                    linksHtml += `
+                        <span class="text-sm text-gray-500 italic bg-slate-700/50 p-1.5 rounded-lg border border-slate-600">Hardware/Simulation Project</span>
+                    `;
+                }
+
+
+                return `
+                    <div class="project-card glass-card p-6 rounded-2xl shadow-[0_0_20px_rgba(200,100,255,0.1)] border-t border-l border-fuchsia-500/20 hover:border-cyan-500/50 transition-transform-shadow transform hover:translate-y-[-6px] relative overflow-hidden" data-category="${filterCategory}" style="animation-delay: ${0.2 + index * 0.1}s; opacity: 0; transform: translateY(20px);">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-fuchsia-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                        <div class="flex items-start mb-4 gap-4">
+                            <i data-lucide="${project.icon}" class="w-6 h-6 ${isWeb ? 'text-emerald-400 glow-emerald' : 'text-cyan-400 glow-cyan'}"></i>
+                            <h3 class="text-xl font-bold text-white tracking-wide leading-snug">
+                                ${project.title}
+                            </h3>
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full ml-auto whitespace-nowrap tracking-wider ${categoryClass}">
+                                ${project.category}
+                            </span>
+                        </div>
+                        <p class="text-gray-300 mb-4 text-sm">${project.description}</p>
+                        <p class="text-xs text-gray-500 font-mono mb-4 border-t border-slate-700/50 pt-3">
+                            <span class="text-gray-100 font-semibold">Tech Stack:</span> ${project.technologies}
+                        </p>
+                        <div class="flex gap-4 flex-wrap mt-4">
+                            ${linksHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            projectsHtml += `<div id="project-cards-container" class="grid grid-cols-1 lg:grid-cols-2 gap-10">${cardsHtml}</div>`;
+            document.getElementById('projects-content').innerHTML = projectsHtml;
+
+            // Apply fade-in-up after rendering content
+            document.querySelectorAll('#project-cards-container .project-card').forEach(card => {
+                 card.classList.add('fade-in-up');
+            });
+
+            if (window.lucide) { window.lucide.createIcons(); }
+        }
+
+        function renderSkills() {
+            let skillsHtml = renderSectionTitle("Technical Skill Matrix", "zap");
+            
+            // Replaced Gemini feature with a simple, static introductory message
+            skillsHtml += `
+                <div class="mb-12 glass-card p-6 rounded-2xl border border-cyan-500/30 shadow-2xl slide-in-left" style="animation-delay: 0.1s;">
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2 flex items-center gap-2">
+                        <i data-lucide="lightbulb" class="w-6 h-6 glow-cyan"></i>
+                        Core Competencies Overview
+                    </h3>
+                    <p class="text-gray-300 text-base">This matrix highlights expertise across Full Stack Development (MERN), robust Embedded Systems (ESP32/Arduino), and specialized areas like Digital Signal Processing (DSP).</p>
+                </div>
+            `;
+            
+            const skillsGridHtml = skills.map((skillGroup, groupIndex) => {
+                const itemsHtml = skillGroup.items.map(item => `
+                    <li class="text-gray-300 text-sm flex items-start gap-2">
+                        <span class="text-fuchsia-400 font-bold mt-0.5">»</span>
+                        ${item}
+                    </li>
+                `).join('');
+
+                return `
+                    <!-- Changed from fade-in-up to slide-in-left -->
+                    <div class="glass-card p-6 rounded-2xl shadow-xl border border-cyan-500/20 slide-in-left" style="animation-delay: ${0.3 + groupIndex * 0.1}s;">
+                        <h3 class="text-lg font-extrabold text-cyan-400 mb-4 pb-2 border-b border-cyan-700/50 uppercase tracking-wider">
+                            ${skillGroup.category}
+                        </h3>
+                        <ul class="space-y-3">
+                            ${itemsHtml}
+                        </ul>
+                    </div>
+                `;
+            }).join('');
+
+            skillsHtml += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">${skillsGridHtml}</div>`;
+            skillsHtml += `
+                <p class="mt-12 text-center text-gray-500 text-sm italic border-t border-slate-800 pt-6 fade-in-up" style="animation-delay: 0.7s;">
+                    Synergistic focus on integrating <b>Embedded Systems (C/C++)</b> with robust <b>Full Stack Web (MERN)</b> solutions, expertly deployed via <b>Cloud Platforms (Vercel)</b>.
+                </p>
+            `;
+            
+            document.getElementById('skills-content').innerHTML = skillsHtml;
+            if (window.lucide) { window.lucide.createIcons(); }
+        }
+
+        function renderEducation() {
+            let educationHtml = renderSectionTitle("Academic & Professional Growth", "book-open");
+            
+            educationHtml += `
+                <div class="space-y-10">
+                    <!-- Education Block -->
+                    <!-- Changed from fade-in-up to slide-in-left -->
+                    <div class="glass-card p-8 rounded-2xl shadow-[0_0_25px_rgba(255,0,255,0.15)] border border-fuchsia-500/30 slide-in-left" style="animation-delay: 0.1s;">
+                        <h3 class="text-2xl font-bold text-white mb-2 tracking-tight">Bachelor of Engineering (B.E.)</h3>
+                        <p class="text-cyan-400 text-xl font-medium mb-1">Electronics and Telecommunication</p>
+                        <p class="text-gray-300 mb-4">Pimpri Chinchwad College of Engineering (PCCOE), Pune</p>
+                        <p class="text-sm text-gray-500 font-semibold bg-slate-900 p-2 rounded-lg inline-block">Expected Graduation: [April, 2027]</p>
+                    </div>
+
+                    <!-- Certifications Block -->
+                    <!-- Changed from fade-in-up to slide-in-left -->
+                    <div class="glass-card p-8 rounded-2xl shadow-[0_0_25px_rgba(0,255,255,0.15)] border border-cyan-500/30 slide-in-left" style="animation-delay: 0.3s;">
+                        <h3 class="text-2xl font-bold text-white mb-4 tracking-tight">Certifications & Competitions</h3>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-3 text-lg">
+                                <span class="text-fuchsia-400 font-bold mt-1">»</span>
+                                <b>National-Level Participant:</b> Smart India Hackathon
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-fuchsia-400 font-bold mt-1">»</span>
+                                <b>Coursework:</b> Microcontroller Projects: Serial Communication and Motion Detection (Alison)
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-fuchsia-400 font-bold mt-1">»</span>
+                                <b>Coursework:</b> Styling Websites with CSS (Alison)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            document.getElementById('education-content').innerHTML = educationHtml;
+        }
+
+        function renderContact() {
+            let contactHtml = renderSectionTitle("Connect with Me", "mail");
+
+            contactHtml += `
+                <p class="text-gray-300 mb-10 text-lg fade-in-up" style="animation-delay: 0.1s;">
+                    I am currently open to collaborations and projects that bridge the gap between hardware and full-stack solutions.
+                </p>
+
+                <!-- Changed from fade-in-up to slide-in-left -->
+                <div class="space-y-6 text-left p-6 glass-card rounded-2xl border border-fuchsia-500/30 inline-block w-full slide-in-left" style="animation-delay: 0.3s;">
+                    <div class="flex items-center text-gray-300 text-lg">
+                        <i data-lucide="mail" class="w-6 h-6 text-cyan-400 mr-4 glow-cyan"></i>
+                        <span class="font-semibold text-white">Email:</span>
+                        <a href="mailto:atharva.sawantdesai23@pccoepune.org" class="text-cyan-400 hover:text-fuchsia-400 transition duration-150 font-medium flex items-center gap-1 ml-3" target="_blank" rel="noopener noreferrer">
+                            atharva.sawantdesai23@pccoepune.org
+                            <i data-lucide="link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                    <div class="flex items-center text-gray-300 text-lg">
+                        <i data-lucide="cpu" class="w-6 h-6 text-fuchsia-400 mr-4 glow-fuchsia"></i>
+                        <span class="font-semibold text-white">Location:</span>
+                        <span class="ml-3 text-gray-400">Pune, India (Tathawade, Pimpri-Chinchwad)</span>
+                    </div>
+                </div>
+
+                <div class="mt-10 flex justify-center gap-8 fade-in-up" style="animation-delay: 0.5s;">
+                    <a href="https://github.com/Atharvasupreme" target="_blank" rel="noopener noreferrer" class="transition-transform hover:scale-110">
+                        <span class="text-gray-400 hover:text-cyan-400 transition-colors logo-pulse">
+                            <svg role="img" viewBox="0 0 24 24" class="w-8 h-8 fill-current">
+                              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.344.726-4.04-1.61-4.04-1.61C4.47 18.232 3.68 17.8 3.68 17.8c-1.087-.744.084-.73.084-.73 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.493.998.108-.77.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.1-3.18 0 0 1.005-.322 3.3-.123 1.055-.293 2.175-.44 3.3-.44s2.245.147 3.3.44c2.295-.198 3.3-.123 3.3-.123.64 1.657.235 2.877.1 3.18.77.84 1.235 1.91 1.235 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </span>
+                    </a>
+                    <a href="https://linkedin.com/in/atharvasawantdesai" target="_blank" rel="noopener noreferrer" class="transition-transform hover:scale-110">
+                        <span class="text-gray-400 hover:text-fuchsia-400 transition-colors logo-pulse" style="animation-delay: 0.1s;">
+                            <svg role="img" viewBox="0 0 24 24" class="w-8 h-8 fill-current">
+                              <path d="M20.447 20.452h-3.554v-5.569c0-1.325-.028-3.044-1.852-3.044-1.853 0-2.136 1.445-2.136 2.951v5.662h-3.554v-12.28h3.418v1.561h.049c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.29h3.554l.001-.002zm-16.733-13.68c0 1.202-.977 2.179-2.179 2.179s-2.179-.977-2.179-2.179c0-1.201.977-2.178 2.179-2.178s2.179.977 2.179 2.178zM.65 20.452h3.555V8.173H.65v12.28z" />
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            `;
+            document.getElementById('contact-content').innerHTML = contactHtml;
+            if (window.lucide) { window.lucide.createIcons(); }
+        }
+        
+        // --- PARTICLE SYSTEM LOGIC (Live Wallpaper) ---
+        let canvas, ctx, particles = [];
+        const particleCount = 120; 
+        const connectionDistance = 200; 
+        const particleColor = 'rgba(6, 182, 212, 0.8)'; // Cyan
+        const lineColor = 'rgba(244, 63, 94, 0.1)'; // Rose/Fuchsia
+
+        function Particle(x, y) {
+            this.x = x || Math.random() * canvas.width;
+            this.y = y || Math.random() * canvas.height;
+            this.size = Math.random() * 3 + 2; // Size for square/triangle sides
+            this.shape = Math.random() > 0.5 ? 'square' : 'triangle'; // Randomly assign shape
+            this.rotation = Math.random() * 360; // Initial rotation
+            this.rotationSpeed = (Math.random() - 0.5) * 0.5; // Rotation speed
+            this.velocity = {
+                x: (Math.random() - 0.5) * 1.0, 
+                y: (Math.random() - 0.5) * 1.0 
+            };
+        }
+
+        Particle.prototype.draw = function() {
+            ctx.fillStyle = particleColor;
+            ctx.shadowColor = particleColor;
+            ctx.shadowBlur = this.size * 2;
+            
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation * Math.PI / 180);
+
+            if (this.shape === 'square') {
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+            } else { // triangle
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size);
+                ctx.lineTo(-this.size, this.size / 2);
+                ctx.lineTo(this.size, this.size / 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            ctx.restore();
+        };
+
+        Particle.prototype.update = function() {
+            // Check boundaries and reverse velocity if hit
+            if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+                this.velocity.x = -this.velocity.x;
+            }
+            if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+                this.velocity.y = -this.velocity.y;
+            }
+
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+            this.rotation += this.rotationSpeed; // Apply rotation
+
+            this.draw();
+        };
+
+        function connectParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        // Calculate base opacity
+                        let opacity = 1 - distance / connectionDistance; 
+                        
+                        // Dynamic Line Fluctuation (Aggressive Effect)
+                        opacity *= (0.7 + Math.random() * 0.3); 
+
+                        ctx.beginPath();
+                        ctx.strokeStyle = lineColor;
+                        ctx.lineWidth = 1;
+                        ctx.globalAlpha = opacity;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                        ctx.globalAlpha = 1; // Reset opacity
+                    }
+                }
+            }
+        }
+
+        function initializeParticles() {
+            canvas = document.getElementById('particle-canvas');
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas size and handle resizing
+            const setCanvasSize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = document.body.scrollHeight; // Match document height
+            };
+            setCanvasSize();
+            window.addEventListener('resize', setCanvasSize);
+            
+            // Only create particles once
+            if (particles.length === 0) {
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+        }
+
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+
+            // Draw a very subtle dark background layer to make the neon lines pop
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.4)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Re-adjust canvas height dynamically in animation loop
+            if (canvas.height !== document.body.scrollHeight) {
+                 canvas.height = document.body.scrollHeight;
+            }
+
+            connectParticles();
+            particles.forEach(particle => particle.update());
+        }
+
+        // --- Event Listeners and Initialization ---
+
+        function setupEventListeners() {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Navigation Clicks (Desktop and Mobile)
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+                    updateActiveSection(targetId);
+                    if (!mobileMenu.classList.contains('hidden')) {
+                         mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Audio Player
+            document.getElementById('audio-player-button').addEventListener('click', togglePlayback);
+            
+            // Initial filter setting
+            filterProjects('All');
+        }
+        
+        function setupIntersectionObserver() {
+             const sections = navigation.map(item => document.getElementById(item.section)).filter(el => el);
+             
+             const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            updateActiveSection(entry.target.id);
+                        }
+                        // Add class for staggered entrance when element enters viewport
+                        if (entry.isIntersecting && !entry.target.classList.contains('animated-section')) {
+                            // Only target the main container elements that hold the cards
+                            if (entry.target.id === 'skills' || entry.target.id === 'education' || entry.target.id === 'contact') {
+                                
+                                // For skills/education/contact, target children for staggered animation
+                                const containers = entry.target.querySelectorAll('.glass-card:not(.animated-card)');
+                                containers.forEach((card, index) => {
+                                    card.style.animationDelay = `${index * 0.15}s`;
+                                    // Use a different, more noticeable animation (slide-in-left) for these sections
+                                    card.classList.remove('fade-in-up');
+                                    card.classList.add('slide-in-left');
+                                    card.classList.add('animated-card');
+                                });
+                            }
+                            
+                            // For projects, the cards already have the fade-in-up class applied in renderProjects
+                            if (entry.target.id === 'projects') {
+                                entry.target.querySelectorAll('.project-card:not(.animated-card)').forEach((card, index) => {
+                                    card.style.animationDelay = `${index * 0.1}s`;
+                                    card.classList.add('fade-in-up');
+                                    card.classList.add('animated-card');
+                                });
+                            }
+                            entry.target.classList.add('animated-section');
+                        }
+                    });
+                },
+                // Lower threshold for intersection to trigger animations sooner
+                { threshold: 0.15, rootMargin: "-10% 0px -10% 0px" } 
+            );
+            
+            sections.forEach(section => observer.observe(section));
+        }
+
+        function initializeApp() {
+            // Set current year in footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // 1. Initialize Audio
+            initializeAudio();
+
+            // 2. Render all static content
+            renderNavigation();
+            renderHome();
+            renderProjects();
+            renderSkills();
+            renderEducation();
+            renderContact();
+
+            // 3. Set up particle system
+            initializeParticles();
+            animateParticles();
+
+            // 4. Set up event listeners
+            setupEventListeners();
+            
+            // 5. Set up intersection observer
+            setupIntersectionObserver();
+            
+            // 6. Initial active section update
+            updateActiveSection('home');
+        }
+
+        // Start the application after the DOM is fully loaded
+        window.onload = initializeApp;
+    </script>
+</body>
+</html>
